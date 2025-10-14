@@ -50,12 +50,12 @@ jobs:
           npm -v
 
       - name: Build (verbose)
-        env: { HUGO_ENV: production }
-        run: |
-          set -e
-          test -f postcss.config.js || { echo "postcss.config.js missing"; exit 1; }
-          hugo --verbose --minify
-          echo "---- built files ----"; ls -la public || true
+  env: { HUGO_ENV: production }
+  run: |
+    set -e
+    test -f postcss.config.js || { echo "postcss.config.js missing"; exit 1; }
+    hugo --minify
+
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -71,3 +71,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+

@@ -17,22 +17,20 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: Show repo status
-        run: |
-          git submodule status
-          echo "---- .gitmodules ----"
-          cat .gitmodules || true
-          echo "---- tree ----"
-          ls -la
-          echo "---- static ----"
-          ls -la static || true
-          echo "---- list postcss ----"
-          ls -la postcss*.js || true
-          echo "---- show hugo.toml ----"
-          sed -n '1,120p' hugo.toml || true
-
+      # Create or enable the Pages site if it doesn't exist yet
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Show repo status
+        run: |
+          git submodule status || true
+          echo "---- .gitmodules ----"; cat .gitmodules || true
+          echo "---- root ----"; ls -la
+          echo "---- static ----"; ls -la static || true
+          echo "---- postcss ----"; ls -la postcss*.js || true
+          echo "---- hugo.toml (first 120 lines) ----"; sed -n '1,120p' hugo.toml || true
 
       - name: Setup Hugo (extended)
         uses: peaceiris/actions-hugo@v3
@@ -43,7 +41,7 @@ jobs:
         with: { node-version: 'lts/*' }
 
       - name: Install PostCSS deps
-        run: npm i -D postcss postcss-cli autoprefixer
+        run: npm ci || npm i -D postcss postcss-cli autoprefixer
 
       - name: Versions
         run: |
@@ -54,9 +52,10 @@ jobs:
       - name: Build (verbose)
         env: { HUGO_ENV: production }
         run: |
+          set -e
+          test -f postcss.config.js || { echo "postcss.config.js missing"; exit 1; }
           hugo --verbose --minify
-          echo "---- built files ----"
-          ls -la public || true
+          echo "---- built files ----"; ls -la public || true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,0 +1,14 @@
+
+
+baseURL = "https://ajaysabu.ca"
+title   = "Ajay Sabu | Cloud & FinOps"
+theme   = "careercanvas"
+[params.pexels]
+enabled     = false        # we are not using it, but the theme still validates fields
+api_key     = ""
+queries     = ["cloud", "azure"]   # IMPORTANT: must be a non-empty array of strings
+collections = []
+orientation = ""
+size        = ""
+per_page    = 0
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects on Ajay Sabu | Cloud &amp; FinOps</title>
+    <link>http://localhost:1414/projects/</link>
+    <description>Recent content in Projects on Ajay Sabu | Cloud &amp; FinOps</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 14 Oct 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1414/projects/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Azure Governance Foundation</title>
+      <link>http://localhost:1414/projects/azure-governance/</link>
+      <pubDate>Tue, 14 Oct 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1414/projects/azure-governance/</guid>
+      <description>Management groups, policy, tagging, RBAC, cost visibility.</description>
+    </item>
+    <item>
+      <title>Terraform Cloud Migration</title>
+      <link>http://localhost:1414/projects/terraform-cloud-migration/</link>
+      <pubDate>Tue, 14 Oct 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1414/projects/terraform-cloud-migration/</guid>
+      <description>Module design, VCS workflow, drift control.</description>
+    </item>
+  </channel>
+</rss>

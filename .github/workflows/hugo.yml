@@ -1,65 +1,61 @@
-name: Deploy Hugo site to GitHub Pages (debug)
+name: Deploy Hugo site to GitHub Pages
 
 on:
-  push: { branches: [ main ] }
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
-permissions: { contents: read, pages: write, id-token: write }
-concurrency: { group: "pages", cancel-in-progress: true }
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (with submodules)
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: true          # important: pulls your theme
           fetch-depth: 0
 
-      # Create or enable the Pages site if it doesn't exist yet
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Show repo status
-        run: |
-          git submodule status || true
-          echo "---- .gitmodules ----"; cat .gitmodules || true
-          echo "---- root ----"; ls -la
-          echo "---- static ----"; ls -la static || true
-          echo "---- postcss ----"; ls -la postcss*.js || true
-          echo "---- hugo.toml (first 120 lines) ----"; sed -n '1,120p' hugo.toml || true
-
-      - name: Setup Hugo (extended)
+      - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
-        with: { hugo-version: 'latest', extended: true }
+        with:
+          hugo-version: '0.151.0'   # or 'latest'
+          extended: true
 
-      - name: Setup Node for PostCSS
+      - name: Setup Node (for PostCSS)
         uses: actions/setup-node@v4
-        with: { node-version: 'lts/*' }
+        with:
+          node-version: 'lts/*'
 
-      - name: Install PostCSS deps
-        run: npm ci || npm i -D postcss postcss-cli autoprefixer
-
-      - name: Versions
+      - name: Install PostCSS deps if package.json exists
         run: |
-          hugo version
-          node -v
-          npm -v
+          if [ -f package-lock.json ] || [ -f package.json ]; then
+            npm ci || npm i -D postcss postcss-cli autoprefixer
+          fi
 
-      - name: Build (verbose)
-  env: { HUGO_ENV: production }
-  run: |
-    set -e
-    test -f postcss.config.js || { echo "postcss.config.js missing"; exit 1; }
-    hugo --minify
+      - name: Ensure postcss.config.js exists
+        run: |
+          test -f postcss.config.js || \
+          echo "module.exports = { plugins: [require('autoprefixer')] };" > postcss.config.js
 
+      - name: Build
+        env:
+          HUGO_ENVIRONMENT: production
+          HUGO_ENV: production
+        run: hugo --minify
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
-        with: { path: ./public }
+        with:
+          path: ./public
 
   deploy:
     needs: build
@@ -71,4 +67,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
